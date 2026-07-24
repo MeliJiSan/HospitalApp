@@ -1,12 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:background="#F8F9FA">
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent" android:layout_height="match_parent" android:padding="16dp">
-    <TextView android:id="@+id/tvTitulo" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Registrar Paciente" android:textSize="20sp" android:textStyle="bold" app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toStartOf="parent"/>
-    <EditText android:id="@+id/etNombrePaciente" android:layout_width="0dp" android:layout_height="wrap_content" android:hint="Nombre completo" android:layout_marginTop="12dp" app:layout_constraintWidth_percent="0.9" app:layout_constraintTop_toBottomOf="@id/tvTitulo" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
-    <EditText android:id="@+id/etEdadPaciente" android:layout_width="0dp" android:layout_height="wrap_content" android:hint="Edad" android:inputType="number" android:layout_marginTop="8dp" app:layout_constraintWidth_percent="0.9" app:layout_constraintTop_toBottomOf="@id/etNombrePaciente" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
-    <TextView android:id="@+id/tvLabelDoctor" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Doctor asignado:" android:layout_marginTop="12dp" app:layout_constraintTop_toBottomOf="@id/etEdadPaciente" app:layout_constraintStart_toStartOf="parent"/>
-    <!--  Spinner con los doctores reales de la BD (antes el doctor quedaba fijo en id=1)  -->
-    <Spinner android:id="@+id/spinnerDoctor" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="4dp" app:layout_constraintWidth_percent="0.9" app:layout_constraintTop_toBottomOf="@id/tvLabelDoctor" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
-    <!--  Contenedor para instanciar el Fragment de Consulta  -->
-    <FrameLayout android:id="@+id/fragmentContainer" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="16dp" app:layout_constraintWidth_percent="0.9" app:layout_constraintTop_toBottomOf="@id/spinnerDoctor" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
-    <Button android:id="@+id/btnGuardarTodo" android:layout_width="0dp" android:layout_height="wrap_content" android:text="Guardar Paciente y Consulta" android:layout_marginTop="16dp" app:layout_constraintWidth_percent="0.9" app:layout_constraintTop_toBottomOf="@id/fragmentContainer" app:layout_constraintStart_toStartOf="parent" app:layout_constraintEnd_toEndOf="parent"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- BARRA SUPERIOR QUE EVITA QUE SE CORTE EL TÍTULO -->
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="#212121"
+            app:title="Registrar Paciente"
+            app:titleTextColor="@android:color/white" />
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- SCROLLVIEW PARA DESPLAZARSE SI SALE EL TECLADO -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="20dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 1. NOMBRE PACIENTE (Solo letras, sin números ni símbolos) -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Nombre completo">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etNombrePaciente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords"
+                    android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZáéíóúÁÉÍÓÚñÑ " />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 2. EDAD PACIENTE (Solo números) -->
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Edad">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etEdadPaciente"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:maxLength="3" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- 3. DOCTOR ASIGNADO -->
+            <TextView
+                android:id="@+id/tvLabelDoctor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Doctor asignado:"
+                android:textSize="13sp"
+                android:textColor="#666666"
+                android:layout_marginBottom="4dp"/>
+
+            <Spinner
+                android:id="@+id/spinnerDoctor"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- 4. CONTENEDOR FRAGMENT DE CONSULTA -->
+            <FrameLayout
+                android:id="@+id/fragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp" />
+
+            <!-- 5. BOTÓN GUARDAR TODO -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnGuardarTodo"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Guardar Paciente y Consulta"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:backgroundTint="#212121"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

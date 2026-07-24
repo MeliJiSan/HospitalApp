@@ -1,5 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:fitsSystemWindows="true">
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical">
-    <TextView android:id="@+id/tvCoords" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="12dp" android:text="Obteniendo coordenadas GPS..." android:textSize="14sp" android:textStyle="bold" android:background="#E0E0E0"/>
-    <fragment android:id="@+id/map" android:name="com.google.android.gms.maps.SupportMapFragment" android:layout_width="match_parent" android:layout_height="match_parent"/>
+    <!-- BARRA SUPERIOR -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbarMapa"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#212121"
+        app:title="Ubicación del Hospital"
+        app:titleTextColor="@android:color/white" />
+
+    <!-- TEXTO PARA MOSTRAR LAS COORDENADAS (Aquí está el ID que faltaba) -->
+    <TextView
+        android:id="@+id/tvCoords"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="12dp"
+        android:text="Obteniendo coordenadas..."
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#212121"
+        android:background="#E0E0E0"
+        android:gravity="center" />
+
+    <!-- FRAGMENTO DE GOOGLE MAPS -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </LinearLayout>

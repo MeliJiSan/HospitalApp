@@ -28,7 +28,10 @@ public class PacienteController {
         ContentValues valores = new ContentValues();
         valores.put("nombre", paciente.getNombre());
         valores.put("edad", paciente.getEdad());
+
+        // Obtenemos el ID del doctor desde el objeto paciente
         valores.put("id_doctor", paciente.getIdDoctor());
+
         return db.insert("pacientes", null, valores);
     }
 

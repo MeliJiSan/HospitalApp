@@ -19,17 +19,36 @@ import java.util.List;
  */
 public class PacientesActivity extends AppCompatActivity {
 
+    private TableLayout tableLayout;
+    private PacienteController pacienteController;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_pacientes);
 
-        TableLayout tableLayout = findViewById(R.id.tablePacientes);
-        PacienteController pacienteController = new PacienteController(this);
+        // Inicializamos las referencias
+        tableLayout = findViewById(R.id.tablePacientes);
+        pacienteController = new PacienteController(this);
+
+        // Carga inicial
+        cargarListaPacientes();
+    }
+
+    private void cargarListaPacientes() {
+        if (tableLayout == null || pacienteController == null) return;
+
+        // 1. Limpiamos las filas anteriores para no duplicar elementos al regresar a esta pantalla
+        tableLayout.removeAllViews();
+
+        // 2. Consultamos la base de datos
         List<Paciente> pacientes = pacienteController.obtenerTodosConDoctor();
 
-        for (Paciente paciente : pacientes) {
-            tableLayout.addView(crearFila(paciente));
+        // 3. Agregamos cada fila de paciente
+        if (pacientes != null) {
+            for (Paciente paciente : pacientes) {
+                tableLayout.addView(crearFila(paciente));
+            }
         }
     }
 
@@ -53,5 +72,12 @@ public class PacientesActivity extends AppCompatActivity {
         row.addView(tvEdad);
         row.addView(tvDoctor);
         return row;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // Vuelve a consultar la base de datos y refresca la tabla automáticamente
+        cargarListaPacientes();
     }
 }

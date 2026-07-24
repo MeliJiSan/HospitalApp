@@ -38,4 +38,18 @@ public class DoctorController {
         cursor.close();
         return doctores;
     }
+
+    public List<String> obtenerNombresDoctores() {
+        List<String> listaNombres = new ArrayList<>();
+
+        // CORRECCIÓN AQUÍ: Se cambió 'obtenerDoctores()' por 'obtenerTodos()'
+        List<Doctor> listaDoctores = obtenerTodos();
+
+        if (listaDoctores != null) {
+            for (Doctor doc : listaDoctores) {
+                listaNombres.add(doc.getNombre() + " (" + doc.getEspecialidad() + ")");
+            }
+        }
+        return listaNombres;
+    }
 }

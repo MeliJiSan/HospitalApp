@@ -13,7 +13,7 @@
         android:label="Hospital App"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MaterialComponents.DayNight.DarkActionBar">
+        android:theme="@style/Theme.MaterialComponents.DayNight.NoActionBar">
 
         <!-- Clave de la API de Google Maps -->
         <meta-data
@@ -23,18 +23,33 @@
         <!-- LoginActivity como pantalla de inicio -->
         <activity
             android:name=".activities.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <activity android:name=".activities.WifiDetailsActivity" />
-        <activity android:name=".activities.UbicacionMapaActivity" />
-        <activity android:name=".activities.RegistroPacienteActivity" />
-        <activity android:name=".activities.PacientesActivity" />
-        <activity android:name=".activities.VisorTablasActivity" />
+        <activity
+            android:name=".activities.WifiDetailsActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.UbicacionMapaActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.RegistroPacienteActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.PacientesActivity"
+            android:windowSoftInputMode="adjustResize" />
+
+        <activity
+            android:name=".activities.VisorTablasActivity"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 
