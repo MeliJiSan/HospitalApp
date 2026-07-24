@@ -1,53 +1,53 @@
 package com.hospitalapp.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.hospitalapp.R;
-import com.hospitalapp.database.DatabaseHelper;
+import com.hospitalapp.controllers.UsuarioController;
 
-//import com.hospitalapp.VisorTablasActivity;
-
+/**
+ * View: solo se encarga de leer la UI y mostrar resultados.
+ * Toda la validación real vive en UsuarioController (Controller).
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private EditText etUser, etPass;
-    private DatabaseHelper dbHelper;
+    private UsuarioController usuarioController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        dbHelper = new DatabaseHelper(this);
+        usuarioController = new UsuarioController(this);
         etUser = findViewById(R.id.etUser);
         etPass = findViewById(R.id.etPass);
         Button btnLogin = findViewById(R.id.btnLogin);
 
-        btnLogin.setOnClickListener(v -> {
-            String user = etUser.getText().toString().trim();
-            String pass = etPass.getText().toString().trim();
-
-            if (validarUsuario(user, pass)) {
-                Toast.makeText(this, "¡Bienvenido " + user + "!", Toast.LENGTH_SHORT).show();
-                // Al autenticar, pasa al menú visor de tablas
-                startActivity(new Intent(this, VisorTablasActivity.class));
-                finish();
-            } else {
-                Toast.makeText(this, "Datos erróneos. Prueba: admin / 1234", Toast.LENGTH_LONG).show();
-            }
-        });
+        btnLogin.setOnClickListener(v -> intentarLogin());
     }
 
-    private boolean validarUsuario(String user, String pass) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        Cursor c = db.rawQuery("SELECT * FROM usuarios WHERE usuario=? AND password=?", new String[]{user, pass});
-        boolean existe = c.getCount() > 0;
-        c.close();
-        return existe;
+    private void intentarLogin() {
+        String usuario = etUser.getText().toString().trim();
+        String password = etPass.getText().toString().trim();
+
+        if (usuario.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, "Ingresa usuario y contraseña", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (usuarioController.validarUsuario(usuario, password)) {
+            Toast.makeText(this, "¡Bienvenido " + usuario + "!", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(this, VisorTablasActivity.class));
+            finish();
+        } else {
+            Toast.makeText(this, "Datos erróneos. Prueba: admin / 1234", Toast.LENGTH_LONG).show();
+        }
     }
 }

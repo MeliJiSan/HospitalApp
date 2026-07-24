@@ -1,81 +1,16 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:fitsSystemWindows="true">
 
-    <!-- SECCIÓN DE NAVEGACIÓN (LOS 4 BOTONES) -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Menú Principal / Navegación"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <Button
-        android:id="@+id/btnWifi"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver Detalles de WiFi"
-        android:layout_marginBottom="4dp"/>
-
-    <Button
-        android:id="@+id/btnMapa"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ubicación GPS y Mapa"
-        android:layout_marginBottom="4dp"/>
-
-    <Button
-        android:id="@+id/btnRegistro"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Registrar Paciente (Fragment)"
-        android:layout_marginBottom="4dp"/>
-
-    <Button
-        android:id="@+id/btnPacientes"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Ver Pacientes y Doctores"
-        android:layout_marginBottom="16dp"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:background="#CCCCCC"
-        android:layout_marginBottom="16dp"/>
-
-    <!-- SECCIÓN DEL VISOR DE LA BASE DE DATOS -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Visor de Base de Datos SQLite:"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <Spinner
-        android:id="@+id/spinnerTablas"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginBottom="12dp"
-        android:background="@android:drawable/btn_dropdown"/>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <TextView
-            android:id="@+id/tvContenidoTabla"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:typeface="monospace"
-            android:textSize="14sp"
-            android:textColor="#000000"/>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent" android:orientation="vertical" android:padding="16dp" android:fitsSystemWindows="true">
+    <!--  SECCIÓN DE NAVEGACIÓN (LOS 4 BOTONES)  -->
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Menú Principal / Navegación" android:textSize="18sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+    <Button android:id="@+id/btnWifi" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Ver Detalles de WiFi" android:layout_marginBottom="4dp"/>
+    <Button android:id="@+id/btnMapa" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Ubicación GPS y Mapa" android:layout_marginBottom="4dp"/>
+    <Button android:id="@+id/btnRegistro" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Registrar Paciente (Fragment)" android:layout_marginBottom="4dp"/>
+    <Button android:id="@+id/btnPacientes" android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Ver Pacientes y Doctores" android:layout_marginBottom="16dp"/>
+    <View android:layout_width="match_parent" android:layout_height="2dp" android:background="#CCCCCC" android:layout_marginBottom="16dp"/>
+    <!--  SECCIÓN DEL VISOR DE LA BASE DE DATOS  -->
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:text="Visor de Base de Datos SQLite:" android:textSize="16sp" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+    <Spinner android:id="@+id/spinnerTablas" android:layout_width="match_parent" android:layout_height="48dp" android:layout_marginBottom="12dp" android:background="@android:drawable/btn_dropdown"/>
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <TextView android:id="@+id/tvContenidoTabla" android:layout_width="match_parent" android:layout_height="wrap_content" android:typeface="monospace" android:textSize="14sp" android:textColor="#000000"/>
     </ScrollView>
-
 </LinearLayout>

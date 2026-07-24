@@ -1,34 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="12dp"
-    android:background="#F5F5F5">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detalles de la Consulta (Fragment)"
-        android:textStyle="bold"
-        android:layout_marginBottom="8dp"/>
-
-    <EditText
-        android:id="@+id/etHoraInicio"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Hora Inicio (Ej: 10:00)"/>
-
-    <EditText
-        android:id="@+id/etHoraFin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Hora Salida / Fin (Ej: 10:30)"/>
-
-    <EditText
-        android:id="@+id/etObservaciones"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Observaciones / Medicación"/>
-
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="12dp" android:background="#F5F5F5">
+    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Detalles de la Consulta (Fragment)" android:textStyle="bold" android:layout_marginBottom="8dp"/>
+    <EditText android:id="@+id/etHoraInicio" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Hora Inicio (Ej: 10:00)"/>
+    <EditText android:id="@+id/etHoraFin" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Hora Salida / Fin (Ej: 10:30)"/>
+    <EditText android:id="@+id/etObservaciones" android:layout_width="match_parent" android:layout_height="wrap_content" android:hint="Observaciones / Medicación"/>
 </LinearLayout>

@@ -1,16 +1,22 @@
 package com.hospitalapp.activities;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import com.hospitalapp.R;
-import com.hospitalapp.database.DatabaseHelper;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.hospitalapp.R;
+import com.hospitalapp.controllers.PacienteController;
+import com.hospitalapp.models.Paciente;
+
+import java.util.List;
+
+/**
+ * View: muestra todos los pacientes junto con el doctor que los atendió.
+ * La consulta JOIN ya no vive aquí, sino en PacienteController (Controller).
+ */
 public class PacientesActivity extends AppCompatActivity {
 
     @Override
@@ -19,72 +25,33 @@ public class PacientesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_pacientes);
 
         TableLayout tableLayout = findViewById(R.id.tablePacientes);
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
+        PacienteController pacienteController = new PacienteController(this);
+        List<Paciente> pacientes = pacienteController.obtenerTodosConDoctor();
 
-        // Consulta JOIN entre Tabla Pacientes y Tabla Doctores
-        String query = "SELECT p.id, p.nombre, p.edad, d.nombre AS doctor " +
-                "FROM pacientes p " +
-                "LEFT JOIN doctores d ON p.id_doctor = d.id";
-
-        Cursor c = db.rawQuery(query, null);
-
-        while (c.moveToNext()) {
-            TableRow row = new TableRow(this);
-
-            TextView tv1 = new TextView(this);
-            tv1.setText(c.getString(0) + " | ");
-            TextView tv2 = new TextView(this);
-            tv2.setText(c.getString(1) + " | ");
-            TextView tv3 = new TextView(this);
-            tv3.setText(c.getInt(2) + " años | ");
-            TextView tv4 = new TextView(this);
-            tv4.setText("Atendió: " + c.getString(3));
-
-            row.addView(tv1);
-            row.addView(tv2);
-            row.addView(tv3);
-            row.addView(tv4);
-
-            tableLayout.addView(row);
+        for (Paciente paciente : pacientes) {
+            tableLayout.addView(crearFila(paciente));
         }
-        c.close();
-    }
-        /*
-        // Encabezado de la tabla (*raro)
-        TableRow headerRow = new TableRow(this);
-        headerRow.addView(crearCelda("ID", true));
-        headerRow.addView(crearCelda("Paciente", true));
-        headerRow.addView(crearCelda("Edad", true));
-        headerRow.addView(crearCelda("Doctor", true));
-        tableLayout.addView(headerRow);
-
-        // Consulta SQL con JOIN entre Pacientes y Doctores
-        String query = "SELECT p.id, p.nombre, p.edad, d.nombre AS doctor " +
-                "FROM pacientes p " +
-                "LEFT JOIN doctores d ON p.id_doctor = d.id";
-
-        Cursor c = db.rawQuery(query, null);
-
-        while (c.moveToNext()) {
-            TableRow row = new TableRow(this);
-            row.addView(crearCelda(String.valueOf(c.getInt(0)), false));
-            row.addView(crearCelda(c.getString(1), false));
-            row.addView(crearCelda(c.getInt(2) + " años", false));
-            row.addView(crearCelda(c.getString(3), false));
-            tableLayout.addView(row);
-        }
-        c.close();
-
     }
 
-    private TextView crearCelda(String texto, boolean esEncabezado) {
-        TextView tv = new TextView(this);
-        tv.setText(texto);
-        tv.setPadding(8, 8, 8, 8);
-        if (esEncabezado) {
-            tv.setTypeface(null, Typeface.BOLD);
-        }
-        return tv;
-    }*/
+    private TableRow crearFila(Paciente paciente) {
+        TableRow row = new TableRow(this);
+
+        TextView tvId = new TextView(this);
+        tvId.setText(paciente.getId() + " | ");
+
+        TextView tvNombre = new TextView(this);
+        tvNombre.setText(paciente.getNombre() + " | ");
+
+        TextView tvEdad = new TextView(this);
+        tvEdad.setText(paciente.getEdad() + " años | ");
+
+        TextView tvDoctor = new TextView(this);
+        tvDoctor.setText("Atendió: " + paciente.getNombreDoctor());
+
+        row.addView(tvId);
+        row.addView(tvNombre);
+        row.addView(tvEdad);
+        row.addView(tvDoctor);
+        return row;
+    }
 }
