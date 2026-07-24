@@ -18,7 +18,9 @@
         <!-- Clave de la API de Google Maps -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="TU_API_KEY_AQUI" />
+            android:value="TU_API_KEY_AQUI"
+            />
+
 
         <!-- LoginActivity como pantalla de inicio -->
         <activity

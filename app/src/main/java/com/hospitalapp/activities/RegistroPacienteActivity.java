@@ -1,66 +1,127 @@
 package com.hospitalapp.activities;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.material.textfield.TextInputEditText;
 import com.hospitalapp.R;
-import com.hospitalapp.controllers.PacienteController;
-import com.hospitalapp.controllers.DoctorController;
-import com.hospitalapp.controllers.ConsultaController;
+import com.hospitalapp.models.EdadInvalidaException;
 
-// --- IMPORTACIONES CLAVE QUE FALTABAN ---
-import com.hospitalapp.models.Doctor;
-import com.hospitalapp.models.Paciente;
-import com.hospitalapp.models.Consulta;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Calendar;
 
 public class RegistroPacienteActivity extends AppCompatActivity {
 
-    private TextInputEditText etNombrePaciente, etEdadPaciente;
-    private Spinner spinnerDoctor;
-    private Button btnGuardarTodo;
-
-    // Referencias a las vistas del Fragment de detalles
-    private TextInputEditText etHoraInicio, etHoraFin, etObservaciones;
-
-    // Controladores de Base de Datos
-    private PacienteController pacienteController;
-    private DoctorController doctorController;
-    private ConsultaController consultaController;
-
-    // Lista en memoria para asociar la selección del Spinner con el ID del Doctor
-    private List<Doctor> listaDoctoresObj;
+    private TextInputEditText etFechaNacimiento;
+    private int edadCalculada = -1; // Guardará la edad ya validada
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        /*super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_registro_paciente);
+
+        etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
+
+        // Al hacer clic en el campo, abrimos el selector de fecha
+        etFechaNacimiento.setOnClickListener(v -> mostrarDatePicker());
+        */
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registro_paciente);
 
-        // 1. Inicializar Controladores
-        pacienteController = new PacienteController(this);
+        // 1. Inicializar vistas
+        spinnerDoctor = findViewById(R.id.spinnerDoctor); // Revisa el ID de tu XML
+        etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
+
+        // 2. Inicializar controlador
         doctorController = new DoctorController(this);
-        consultaController = new ConsultaController(this);
 
-        // 2. Vincular vistas del Layout
-        etNombrePaciente = findViewById(R.id.etNombrePaciente);
-        etEdadPaciente = findViewById(R.id.etEdadPaciente);
-        spinnerDoctor = findViewById(R.id.spinnerDoctor);
-        btnGuardarTodo = findViewById(R.id.btnGuardarTodo);
-
-        // 3. Cargar la lista de doctores en el Spinner
+        // 3. ¡IMPORTANTE! Cargar los doctores
         cargarDoctoresEnSpinner();
+    }
 
-        // 4. Configurar listener del botón guardar
-        btnGuardarTodo.setOnClickListener(v -> validarYGuardarBD());
+    private void mostrarDatePicker() {
+        final Calendar c = Calendar.getInstance();
+        int anio = c.get(Calendar.YEAR);
+        int mes = c.get(Calendar.MONTH);
+        int dia = c.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    String fechaSeleccionada = String.format("%02d/%02d/%d", dayOfMonth, (monthOfYear + 1), year);
+
+                    try {
+                        // 1. Calcular la edad a partir de los datos seleccionados
+                        int edad = calcularEdad(year, monthOfYear, dayOfMonth);
+
+                        // 2. Validar con nuestra Excepción
+                        validarEdad(edad);
+
+                        // Si la validación pasa:
+                        edadCalculada = edad;
+                        etFechaNacimiento.setText(fechaSeleccionada + " (" + edadCalculada + " años)");
+                        etFechaNacimiento.setError(null);
+
+                    } catch (EdadInvalidaException e) {
+                        // Manejo de la excepción personalizada
+                        edadCalculada = -1;
+                        etFechaNacimiento.setText("");
+                        etFechaNacimiento.setError(e.getMessage());
+                        Toast.makeText(RegistroPacienteActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                },
+                anio, mes, dia
+        );
+
+        datePickerDialog.show();
+    }
+
+    /**
+     * Calcula la edad exacta comparando la fecha elegida con la fecha actual
+     */
+    private int calcularEdad(int anioNac, int mesNac, int diaNac) {
+        Calendar hoy = Calendar.getInstance();
+
+        int anioActual = hoy.get(Calendar.YEAR);
+        int mesActual = hoy.get(Calendar.MONTH);
+        int diaActual = hoy.get(Calendar.DAY_OF_MONTH);
+
+        int edad = anioActual - anioNac;
+
+        // Ajustar la edad si aún no ha cumplido años en el año actual
+        if (mesActual < mesNac || (mesActual == mesNac && diaActual < diaNac)) {
+            edad--;
+        }
+
+        return edad;
+    }
+
+    /**
+     * Lanza una excepción si la edad sobrepasa el límite permitido o es inconsistente
+     */
+    private void validarEdad(int edad) throws EdadInvalidaException {
+        if (edad < 0) {
+            throw new EdadInvalidaException("La fecha de nacimiento no puede ser futura.");
+        }
+        if (edad > 120) { // Límite para restringir edades muy longevas
+            throw new EdadInvalidaException("Edad no permitida: Supera el límite máximo de 120 años.");
+        }
+    }
+
+    // En tu método de guardar en BD simplemente usas 'edadCalculada'
+    private void validarYGuardarBD() {
+        if (edadCalculada == -1) {
+            etFechaNacimiento.setError("Debe seleccionar una fecha de nacimiento válida");
+            return;
+        }
+
+        // ... Procedes a instanciar Paciente usando 'edadCalculada'
     }
 
     private void cargarDoctoresEnSpinner() {
-        // Obtenemos los objetos Doctor desde el controlador
+        // Obtenemos los objetos Doctor desde la BD
         listaDoctoresObj = doctorController.obtenerTodos();
 
         List<String> nombresDoctores = new ArrayList<>();
@@ -69,109 +130,21 @@ public class RegistroPacienteActivity extends AppCompatActivity {
             for (Doctor doc : listaDoctoresObj) {
                 nombresDoctores.add(doc.getNombre());
             }
+        } else {
+            // Fallback por si la tabla 'doctores' aún no tiene registros precargados
+            nombresDoctores.add("Dr. Gregory House");
+            nombresDoctores.add("Dra. Meredith Grey");
+            nombresDoctores.add("Dr. Shaun Murphy");
         }
 
+        // Usamos layout simple de Android con un estilo visible
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_spinner_item,
                 nombresDoctores
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
         spinnerDoctor.setAdapter(adapter);
-    }
-
-    private void validarYGuardarBD() {
-        // Obtener referencias de los inputs del Fragment
-        etHoraInicio = findViewById(R.id.etHoraInicio);
-        etHoraFin = findViewById(R.id.etHoraFin);
-        etObservaciones = findViewById(R.id.etObservaciones);
-
-        String nombre = etNombrePaciente.getText() != null ? etNombrePaciente.getText().toString().trim() : "";
-        String edadStr = etEdadPaciente.getText() != null ? etEdadPaciente.getText().toString().trim() : "";
-        String horaInicio = (etHoraInicio != null && etHoraInicio.getText() != null) ? etHoraInicio.getText().toString().trim() : "";
-        String horaFin = (etHoraFin != null && etHoraFin.getText() != null) ? etHoraFin.getText().toString().trim() : "";
-        String observaciones = (etObservaciones != null && etObservaciones.getText() != null) ? etObservaciones.getText().toString().trim() : "";
-
-        // --- 1. VALIDACIONES ---
-        if (nombre.isEmpty()) {
-            etNombrePaciente.setError("El nombre es obligatorio");
-            etNombrePaciente.requestFocus();
-            return;
-        } else if (!nombre.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")) {
-            etNombrePaciente.setError("El nombre solo debe contener letras");
-            etNombrePaciente.requestFocus();
-            return;
-        }
-
-        if (edadStr.isEmpty()) {
-            etEdadPaciente.setError("La edad es obligatoria");
-            etEdadPaciente.requestFocus();
-            return;
-        } else if (!edadStr.matches("^\\d+$")) {
-            etEdadPaciente.setError("La edad solo permite números");
-            etEdadPaciente.requestFocus();
-            return;
-        }
-
-        if (etHoraInicio != null) {
-            if (horaInicio.isEmpty() || !horaInicio.matches("^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")) {
-                etHoraInicio.setError("Formato de hora inicio inválido (ej. 10:00)");
-                etHoraInicio.requestFocus();
-                return;
-            }
-        }
-
-        if (etHoraFin != null) {
-            if (horaFin.isEmpty() || !horaFin.matches("^(0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]$")) {
-                etHoraFin.setError("Formato de hora fin inválido (ej. 10:30)");
-                etHoraFin.requestFocus();
-                return;
-            }
-        }
-
-        if (etObservaciones != null && !observaciones.isEmpty()) {
-            if (!observaciones.matches("^[a-zA-ZáéíóúÁÉÍÓÚñÑ\\s]+$")) {
-                etObservaciones.setError("Las observaciones solo deben contener letras");
-                etObservaciones.requestFocus();
-                return;
-            }
-        }
-
-        // --- 2. INSERCIÓN EN BASE DE DATOS ---
-        int edad = Integer.parseInt(edadStr);
-
-// A. Obtener el NOMBRE REAL del doctor seleccionado en el Spinner (ej: "Dr. Gregory House")
-        String nombreDoctorSeleccionado = spinnerDoctor.getSelectedItem() != null ?
-                spinnerDoctor.getSelectedItem().toString() : "";
-
-// B. Obtener el ID del doctor
-        int posicionSeleccionada = spinnerDoctor.getSelectedItemPosition();
-        int idDoctorReal = 1;
-
-        if (listaDoctoresObj != null && !listaDoctoresObj.isEmpty() && posicionSeleccionada < listaDoctoresObj.size()) {
-            idDoctorReal = listaDoctoresObj.get(posicionSeleccionada).getId();
-        } else {
-            idDoctorReal = posicionSeleccionada + 1;
-        }
-
-// C. Crear Paciente pasando el NOMBRE del doctor que pide la clase
-        Paciente nuevoPaciente = new Paciente(0, nombre, edad, nombreDoctorSeleccionado);
-
-// D. Si tu PacienteController requiere el id_doctor para el INSERT, le asignamos el ID numérico
-        nuevoPaciente.setIdDoctor(idDoctorReal); // <--- Esto asegura que guarde el id_doctor en SQLite
-
-// E. Insertar en Base de Datos
-        long pacienteId = pacienteController.insertar(nuevoPaciente);
-
-        if (pacienteId != -1) {
-            // Insertar la Consulta
-            Consulta nuevaConsulta = new Consulta((int) pacienteId, horaInicio, horaFin, observaciones);
-            consultaController.insertar(nuevaConsulta);
-
-            Toast.makeText(this, "¡Paciente guardado exitosamente!", Toast.LENGTH_SHORT).show();
-            finish(); // Cierra y refresca la pantalla anterior
-        } else {
-            Toast.makeText(this, "Error al guardar el paciente en la BD", Toast.LENGTH_LONG).show();
-        }
     }
 }

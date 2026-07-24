@@ -50,7 +50,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- 2. EDAD PACIENTE (Solo números) -->
-            <com.google.android.material.textfield.TextInputLayout
+            <!--<com.google.android.material.textfield.TextInputLayout
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -63,6 +63,23 @@
                     android:layout_height="wrap_content"
                     android:inputType="number"
                     android:maxLength="3" />
+            </com.google.android.material.textfield.TextInputLayout>-->
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tilFechaNacimiento"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Fecha de Nacimiento">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/etFechaNacimiento"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="false"
+                    android:inputType="none" />
+
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- 3. DOCTOR ASIGNADO -->
@@ -72,14 +89,16 @@
                 android:layout_height="wrap_content"
                 android:text="Doctor asignado:"
                 android:textSize="13sp"
-                android:textColor="#666666"
+                android:textColor="#3333"
                 android:layout_marginBottom="4dp"/>
 
             <Spinner
                 android:id="@+id/spinnerDoctor"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
-                android:layout_marginBottom="16dp" />
+                android:layout_marginBottom="16dp"
+                android:background="@android:drawable/btn_dropdown"
+                android:spinnerMode="dropdown" />/>
 
             <!-- 4. CONTENEDOR FRAGMENT DE CONSULTA -->
             <FrameLayout

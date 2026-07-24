@@ -1,73 +1,55 @@
 package com.hospitalapp.activities;
 
-import android.location.Location;
 import android.os.Bundle;
-import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.hospitalapp.R;
+import org.osmdroid.config.Configuration;
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.util.GeoPoint;
+import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 
-public class UbicacionMapaActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class UbicacionMapaActivity extends AppCompatActivity {
 
-    // 1. DECLARACIÓN DE LA VARIABLE (Esto resuelve el error)
-    private TextView tvCoords;
-    private GoogleMap mMap;
-    private FusedLocationProviderClient fusedLocationClient;
-    private LocationCallback locationCallback;
+    private MapView map;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Cargar configuración de OSMDroid
+        Configuration.getInstance().load(this, getSharedPreferences("osmdroid", MODE_PRIVATE));
+
         setContentView(R.layout.activity_ubicacion_mapa);
 
-        // 2. ENLAZAR CON EL XML
-        tvCoords = findViewById(R.id.tvCoords);
+        map = findViewById(R.id.mapView);
+        map.setTileSource(TileSourceFactory.MAPNIK); // Estilo del mapa
+        map.setMultiTouchControls(true); // Permitir hacer zoom con los dedos
 
-        // Inicializar fragmento del mapa
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(this);
-        }
+        // Coordenadas del Hospital
+        GeoPoint puntoHospital = new GeoPoint(19.043700, -98.198000);
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        // Centrar mapa y dar zoom
+        map.getController().setZoom(16.0);
+        map.getController().setCenter(puntoHospital);
+
+        // Crear Pin/Marcador
+        Marker startMarker = new Marker(map);
+        startMarker.setPosition(puntoHospital);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setTitle("Hospital General Central");
+        map.getOverlays().add(startMarker);
     }
 
     @Override
-    public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
-
-        // Ubicación por defecto
-        LatLng ubicacionInicial = new LatLng(17.0654, -96.7236);
-        mMap.addMarker(new MarkerOptions().position(ubicacionInicial).title("Hospital App"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(ubicacionInicial, 15f));
+    protected void onResume() {
+        super.onResume();
+        if (map != null) map.onResume();
     }
 
-    // 3. MÉTODO ACTUALIZAR MAPA Y COORDENADAS
-    private void actualizarMapa(Location location) {
-        if (location == null) return;
-
-        double lat = location.getLatitude();
-        double lng = location.getLongitude();
-
-        // Si tvCoords no es nulo, actualiza el texto en pantalla
-        if (tvCoords != null) {
-            tvCoords.setText(String.format("Coordenadas en tiempo real -> Lat: %.4f | Lng: %.4f", lat, lng));
-        }
-
-        LatLng posicionActual = new LatLng(lat, lng);
-        if (mMap != null) {
-            mMap.clear();
-            mMap.addMarker(new MarkerOptions().position(posicionActual).title("Tu Ubicación"));
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(posicionActual, 16f));
-        }
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (map != null) map.onPause();
     }
 }

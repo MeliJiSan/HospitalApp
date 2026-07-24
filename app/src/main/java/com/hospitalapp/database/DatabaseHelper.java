@@ -44,11 +44,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "hora_fin TEXT, " +
                 "observaciones TEXT)");
 
-        // Insertar mínimo 4 registros obligatorios por tabla
-        db.execSQL("INSERT INTO usuarios (usuario, password, rol) VALUES ('admin', '1234', 'Admin'), ('doc_smith', 'pass123', 'Doctor'), ('enf_lopez', '1234', 'Enfermero'), ('recepcion', 'rec2026', 'Recepcion')");
-        db.execSQL("INSERT INTO doctores (nombre, especialidad, cedula) VALUES ('Dr. Gregory House', 'Diagnóstico', 'MED-101'), ('Dra. Meredith Grey', 'Cirugía', 'MED-102'), ('Dr. Shaun Murphy', 'Pediatría', 'MED-103'), ('Dra. Lisa Cuddy', 'Endocrinología', 'MED-104')");
-        db.execSQL("INSERT INTO pacientes (nombre, edad, id_doctor) VALUES ('Carlos Gómez', 45, 1), ('Ana Martínez', 28, 2), ('Luis Fernández', 60, 3), ('María Rodríguez', 34, 1)");
-        db.execSQL("INSERT INTO consultas (id_paciente, hora_inicio, hora_fin, observaciones) VALUES (1, '08:00', '08:45', 'Gripa fuerte, paracetamol'), (2, '09:00', '09:30', 'Revisión general'), (3, '10:15', '11:00', 'Chequeo de presión arterial'), (4, '11:30', '12:00', 'Dolor de cabeza agudo')");
+
+        db.execSQL("INSERT INTO usuarios (usuario, password, rol) VALUES ('admin', '1234', 'Admin'), " +
+                "('doc_Portillo', 'pass123', 'Doctor'), " +
+                "('enf_lopez', '1234', 'Enfermero'), " +
+                "('recepcion', 'rec2026', 'Recepcion')");
+        db.execSQL("INSERT INTO doctores (nombre, especialidad, cedula) VALUES " +
+                "('Dr.  Luis Manuel Borges López', 'Diagnóstico', 'MED-101'), " +
+                "('Dr. Alejandro Hernández Bernal', 'Cirugía', 'MED-102'), " +
+                "('Dra. Nora Martagón', 'Pediatría', 'MED-103'), " +
+                "('Dra. Fabiola Peralta Galindo', 'Endocrinología', 'MED-104')");
+        db.execSQL("INSERT INTO pacientes (nombre, edad, id_doctor) VALUES (" +
+                "'Carlos Gómez', 45, 1), ('Ana Martínez', 28, 2), " +
+                "('Luis Fernández', 60, 3), ('María Rodríguez', 34, 1)");
+        db.execSQL("INSERT INTO consultas (id_paciente, hora_inicio, hora_fin, observaciones) " +
+                "VALUES (1, '08:00', '08:45', 'Gripa fuerte, paracetamol'), " +
+                "(2, '09:00', '09:30', 'Revisión general')," +
+                " (3, '10:15', '11:00', 'Chequeo de presión arterial'), " +
+                "(4, '11:30', '12:00', 'Dolor de cabeza agudo')");
     }
 
     @Override
